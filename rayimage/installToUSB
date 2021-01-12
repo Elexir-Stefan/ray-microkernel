@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ $# != 1 ]
+then
+    echo -e "installToUSB"
+    echo -e "Installs the ray kernel and its modules to a USB thumb drive."
+    echo -e -n "\n"
+    echo -e "USAGE installToUSB mountpoint"
+else
+	. ./mtoolsaccess
+	. ./imageconfig
+
+    mcopy -sn C:/boot $1/
+    mcopy -sn C:/system $1/
+    mcopy -sn C:/syslinux.cfg $1/
+fi

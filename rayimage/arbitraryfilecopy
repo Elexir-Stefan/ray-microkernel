@@ -1,0 +1,13 @@
+#!/bin/sh
+. mtoolsaccess
+
+if [ $# != 2 ]
+then
+    echo -e "arbitraryfilecopy"
+    echo -e "Copies an arbitrary file (absolute path recommended) to the grub disk."
+    echo -e -n "\n"
+    echo -e "USAGE cpmodule.sh localFilename diskFileName"
+else
+    echo -e "Copying module $1..."
+    mcopy -o $1 C:$2
+fi

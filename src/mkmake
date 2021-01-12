@@ -1,0 +1,294 @@
+#!/bin/bash
+
+showLogo() {
+    echo -e " ____  ____"
+    echo -e "|    ||    |"
+    echo -e "|____||____|"
+    echo -e " ____  _  _"
+    echo -e "|    ||_||_| NURNware RAY microkernel"
+    echo -e "|____||_||:: (C) NURNware Technologies 2008"
+    echo -e "\n"
+}
+
+showHelp() {
+    echo -e "USAGE mkmake [-h | --help] [--debug] [--nodebug] [--release] [--opt] [--optmore [--speed]] [--profile]"
+    echo -e "Generate the ray Makefile(s) in order to compile the kernel.\n"
+    showLogo
+    echo -e "\t-h --help\tShow this help"
+    echo -e "\t--debug  \tGenerate Makefile with enabled debug information"
+    echo -e "\t--kdbg   \tKernel debugging support (COM1)"
+    echo -e "\t--nodebug\tGenerate Makefile for a release (#)"
+    echo -e "\t--release\tSame as --nodebug"
+    echo -e "\t--opt    \tOptimize for speed"
+    echo -e "\t--optmore\tOptimize even more for speed tolerating bigger files (#)"
+    echo -e "\t--speed  \tMaximum optimization possible (#)(%)(\$)"
+    echo -e "\t--profile\tEnable profiling to collect usage and timing information (*)"
+    
+    echo -e "\n\n"
+    echo -e "(#)\t makes debugging impossible"
+    echo -e "(%)\t violates several ISO standards"
+    echo -e "(\$)\t breaks binary compatibility with parts of the kernel compiled with other compilers/options"
+    echo -e "(*)\t usualy reduces performance and is for debugging/testing purposes only"
+    exit 0;
+}
+
+checkArguments() {
+    while [ -n "$1" ]; do
+        case "$1" in
+	-h | --help)	showHelp; shift 1;;
+	--debug)		DEBUG=1; shift 1;;
+	--kdbg)			KDBG=1; shift 1;;
+	--nodebug | --release)	DEBUG=0; shift 1;;
+	--profile)	DOPROFILING=1; shift 1;;
+	--opt)		OPT="1"; shift 1;;
+	--optmore)	OPT="2"; shift 1;;
+	--speed)		SPEED="1"; shift 1;;
+	-*)		echo -e "Unrecognized option: $1. Try -h for help"; exit 1;;
+	*)		echo -e "Unknown parameter: $1. Try -h for help."; exit 1;;
+	esac
+    done
+    
+    if [ "$SPEED" == "1" ]; then
+	if [ $OPT == "2" ]; then
+	    DEFS="$DEFS -fomit-frame-pointer -ffast-math"
+	    OPT="3"
+	else
+	    echo -e "-speed can only be applied with -optmore"
+	    exit 2
+	fi
+    fi
+    
+}
+
+#CC=i686-pc-ray-gcc
+#CPPC=i686-pc-ray-g++
+
+CC=clang
+CPPC=clang++
+LD=i686-pc-ray-g++
+INCLUDEDIR=./Include
+DATEFILE=Include/verdate.h
+OUTFILE=Makefile
+KERNELNAME=ray
+OBJEXT=.o
+DEBUG=1
+KDBG=0
+DOPROFILING=0
+#1 + 2 + 4 + 8 + 16
+#Memory:	1
+#Mutex		2
+#IRQ		4
+#Scheduler:	8
+#Hashing	16
+DBG_SECTIONS=0
+BUILD=`cat build.num`
+
+DEFS="-DRAY_VERSION_BUILD=$BUILD -m32"
+LDOPTS="-nostdlib -nostartfiles -ffreestanding -fno-ident -T raylink.ld"
+CPPSUPPORT="-lgcc -lsupc++"
+OPT=0
+
+
+checkArguments $@
+
+
+# if compiled with kernel debugger support, change the output file name
+if [ $KDBG == 1 ]; then
+    OUTFILE=Makefile.kdbg
+    KERNELNAME=ray.kdbg
+    OBJEXT=.okd
+fi
+
+
+if [ $DEBUG == 1 ]; then
+    DEFS="$DEFS -DRAYDEBUG -DDBG_SECTIONS=$DBG_SECTIONS -gdwarf-2 -ggdb"
+fi
+
+if [ $DOPROFILING == 1 ]; then
+    DEFS="$DEFS -DRAYPROFILING"
+fi
+
+
+PROFILING_ARGS="-finstrument-functions"
+
+
+C_DIRS="app
+memory
+memory/strings
+memory/adt
+modules
+mtask
+hal
+appearance
+video
+math
+math/lib
+kdebug
+test
+cpp
+profiler"
+
+EXTRA_FILES="kernel.c
+boot.S
+cmdline.c"
+
+if [ $KDBG == 1 ]; then
+    if [ $DEBUG == 1 ]; then
+	DEFS="$DEFS -DRAY_KERNEL_DEBUGGER"
+	echo -e "------------------------------------------"
+	echo -e "| ATTENTION                               |"
+	echo -e "|-----------------------------------------|"
+	echo -e "| Compiling with kernel debugger support! |"
+	echo -e "|_________________________________________|"
+    else
+	echo -e "Kernel debugger is only supported when compiling with debugging information."
+	exit -2
+    fi
+fi
+
+C_ARGS="$DEFS -I$INCLUDEDIR -O$OPT -m32 -march=i586 -Wall -ffreestanding -Wwrite-strings -Wunused -Wextra -Werror -fno-stack-protector -pipe"
+CPP_ARGS=$C_ARGS
+
+echo -e " Current build: $BUILD"
+
+echo -e "# NURNware Ray Kernel">$OUTFILE
+echo -e "# (For use with Cold iGnition operating system)">>$OUTFILE
+echo -e "# Copyright (C) 2007 - NURNware Technologies">>$OUTFILE
+echo -e "\n">>$OUTFILE
+
+# Variables
+echo -e "CC=$CC">>$OUTFILE
+echo -e "C_ARGS=$C_ARGS">>$OUTFILE
+echo -e "CPPC=$CPPC">>$OUTFILE
+echo -e "CPP_ARGS=$CPP_ARGS">>$OUTFILE
+echo -e "LD=$LD">>$OUTFILE
+echo -e "\n">>$OUTFILE
+
+echo -e "all: $KERNELNAME">>$OUTFILE
+echo -e "\n">>$OUTFILE
+
+echo -e "clean:">>$OUTFILE
+echo -e "\t@-rm \`find . -iname '*$OBJEXT'\`">>$OUTFILE
+echo -e "\n">>$OUTFILE
+
+echo -e "rebuild: clean $KERNELNAME">>$OUTFILE
+echo -e "\n">>$OUTFILE
+
+# table header
+echo -e "\t[PRF] <Name>\n\t----------------------------------------"
+
+ISERR=0
+OBJECTS=""
+for EX_FILE in $EXTRA_FILES
+do
+	if [ $ISERR == "0" ]
+	then
+		OBJFILE=${EX_FILE%.*}$OBJEXT
+		HEADERS=`$CC $C_ARGS $EX_FILE -M -MT $OBJFILE`
+		if [ $? != "0" ]
+		then
+			ISERR=1
+		fi
+		
+		echo -e "\t<DIS> $EX_FILE"
+		
+		echo -e "$HEADERS">>$OUTFILE
+		echo -e "\t@echo -e \"MAIN [$EX_FILE]\"">>$OUTFILE
+		echo -e "\t@\$(CC) -c \$(C_ARGS) $PROFILE_ARGS $EX_FILE -o $OBJFILE">>$OUTFILE
+		echo -e "\n">>$OUTFILE
+
+		ALLFILES="$ALLFILES $EX_FILE"
+		OBJECTS="$OBJECTS $OBJFILE"
+
+	else
+		echo -e "Aborting $EX_FILE due to errors."
+	fi
+
+done
+
+echo -e "Kernel ring modules:"
+
+
+CFILES=0
+ISERR=0
+for CURDIR in $C_DIRS
+do
+    for CURFILE in $CURDIR/*.[cS]*
+    do
+	if [ $ISERR == "0" ]
+	then
+		OBJFILE=${CURFILE%.*}$OBJEXT
+		EXTENSION=${CURFILE##*.}
+		
+		# check which compiler and arguments to use
+		if [ $EXTENSION == "c" -o $EXTENSION == "S" ]; then
+			COMPILER=$CC
+			COMPARGS=$C_ARGS
+			VAR_COMP=CC
+			VAR_ARGS=C_ARGS
+		elif [ $EXTENSION == "cpp" ]; then
+			COMPILER=$CPPC
+			COMPARGS=$CPP_ARGS
+			VAR_COMP=CPPC
+			VAR_ARGS=CPP_ARGS
+		else
+			echo Unknown extension. Aborting.
+			ISERR=1
+		fi
+
+		# Generate headers
+		HEADERS=`$COMPILER $COMPARGS $CURFILE -M -MT $OBJFILE`
+    		if [ $? != "0" ]
+		then
+		    ISERR=1
+		fi
+
+		# check for profiling
+		if [ $DOPROFILING == 1 ]
+		then
+			UP=" X "
+			PROFILING=$PROFILING_ARGS
+		else
+			UP="DIS"
+			PROFILING=""
+		fi
+		
+		echo -e "\t<$UP> $CURFILE"
+		
+		echo -e "$HEADERS">>$OUTFILE
+		echo -e "\t@echo -e \"SUBPART [$CURFILE]\"">>$OUTFILE
+		echo -e "\t@\$($VAR_COMP) -c \$($VAR_ARGS) $CURFILE $PROFILING -o $OBJFILE">>$OUTFILE
+		echo -e "\n">>$OUTFILE
+
+		ALLFILES="$ALLFILES $CURFILE"
+		OBJECTS="$OBJECTS $OBJFILE"
+
+	else
+	    echo -e "Aborting $CURFILE due to errors."
+	fi
+
+	CFILES=`expr $CFILES + 1`
+    done
+done
+
+echo -e "Generating linker entry..."
+
+echo -e "$KERNELNAME: $DATEFILE $OBJECTS">>$OUTFILE
+echo -e "\t@echo -e \"Building kernel image $KERNELNAME...\"">>$OUTFILE
+echo -e "\t@\$(LD) $LDOPTS -o $KERNELNAME $OBJECTS $CPPSUPPORT">>$OUTFILE
+echo -e "\t@echo -e \"Updating symbol table...\"">>$OUTFILE
+echo -e "\t@./updatesymboltable">>$OUTFILE
+echo -e "\t@\$(LD) $LDOPTS -o $KERNELNAME $OBJECTS $CPPSUPPORT">>$OUTFILE
+echo -e "\t@echo -e \"Done.\"">>$OUTFILE
+
+echo -e "\n">>$OUTFILE
+echo -e ".PHONY: clean $DATEFILE">>$OUTFILE
+
+if [ $ISERR == "0" ]
+then
+	BUILD=$(($BUILD + 1))
+	echo $BUILD>build.num
+	echo -e "updated build number to $BUILD."
+else
+	echo -e "Build-number NOT updated."
+fi

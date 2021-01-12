@@ -1,0 +1,4 @@
+export MTOOLSRC=./mtoolsrc
+KERNELDIR=/boot/kernel
+MODULEDIR=/boot/modules
+USERDRIVERS=/system/core/drivers

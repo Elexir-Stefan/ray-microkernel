@@ -1,0 +1,139 @@
+#!/usr/bin/vmware
+.encoding = "UTF-8"
+displayName = "NURNware Cold Ignition"
+# Platform = Player
+# Version = 2.x
+config.version = "8"
+virtualHW.version = "6"
+guestOS = "other"
+workingDir = ""
+nvram = "New VM.nvram"
+numvcpus ="1"
+memsize = "64"
+
+####### ide-controllers ###############
+ide0.present = "TRUE"
+ide1.present = "FALSE"
+
+####### ide-disks #####################
+ide0:0.present = "TRUE"
+ide0:0.fileName = "ci_hdd.vmdk"
+ide0:0.mode = "persistent"
+ide0:0.deviceType = "disk"
+ide0:1.present = "FALSE"
+ide1:0.present = "FALSE"
+ide1:1.present = "FALSE"
+
+####### scsi-controllers ##############
+scsi0.present = "FALSE"
+scsi0.virtualDev = "buslogic"
+
+####### scsi-disks ####################
+scsi0:0.present = "FALSE"
+scsi0:1.present = "FALSE"
+scsi0:2.present = "FALSE"
+scsi0:3.present = "FALSE"
+scsi0:4.present = "FALSE"
+scsi0:5.present = "FALSE"
+scsi0:6.present = "FALSE"
+scsi0:8.present = "FALSE"
+scsi0:9.present = "FALSE"
+scsi0:10.present = "FALSE"
+scsi0:11.present = "FALSE"
+scsi0:12.present = "FALSE"
+scsi0:13.present = "FALSE"
+scsi0:14.present = "FALSE"
+scsi0:15.present = "FALSE"
+
+####### nics ##########################
+ethernet0.present = "TRUE"
+ethernet0.startConnected = "TRUE"
+ethernet0.virtualDev = "vlance"
+ethernet0.connectionType = "nat"
+ethernet0.vnet = "VMnet8"
+ethernet0.addressType = "generated"
+ethernet0.generatedAddressOffset = "0"
+ethernet0.wakeOnPcktRcv = "FALSE"
+
+####### sound #########################
+sound.present = "TRUE"
+sound.startConnected = "TRUE"
+sound.virtualDev = "es1371"
+sound.fileName = "-1"
+sound.autodetect = "TRUE"
+
+####### display #######################
+svga.autodetect = "FALSE"
+svga.numDisplays = "1"
+svga.maxWidth = "1024"
+svga.maxHeight = "768"
+svga.vramSize = "16777216"
+mks.enable3d = "FALSE"
+
+####### mouse/keyboard ################
+vmmouse.present = "FALSE"
+
+####### advanced stuff ################
+mks.keyboardFilter = "off"
+gui.powerOnAtStartup = "TRUE"
+gui.fullScreenAtPowerOn = "FALSE"
+gui.exitAtPowerOff = "FALSE"
+chipset.useAcpiBattery = "FALSE"
+chipset.useApmBattery = "FALSE"
+powerType.powerOff = "hard"
+powerType.powerOn = "hard"
+powerType.suspend = "hard"
+powerType.reset = "hard"
+toolScripts.afterPowerOn = "FALSE"
+toolScripts.afterResume = "FALSE"
+toolScripts.beforeSuspend = "FALSE"
+toolScripts.beforePowerOff = "FALSE"
+sharedFolder.option = "disabled"
+snapshot.disabled = "TRUE"
+snapshot.Action = "keep"
+replay.logging = "FALSE"
+isolation.tools.dnd.disable = "TRUE"
+isolation.tools.paste.disable = "TRUE"
+isolation.tools.copy.disable = "TRUE"
+tools.syncTime = "FALSE"
+tools.remindInstall = "FALSE"
+tools.upgrade.policy = "manual"
+RemoteDisplay.vnc.enabled = "FALSE"
+RemoteDisplay.vnc.port = "5900"
+applianceView.enabled = "FALSE"
+applianceView.showAtPowerOn = "FALSE"
+applianceView.coverPage.name = ""
+applianceView.coverPage.version = ""
+applianceView.coverPage.author = ""
+applianceView.coverPage.text = ""
+applianceView.coverPage.logo = ""
+priority.grabbed = "normal"
+priority.ungrabbed = "normal"
+debug = "FALSE"
+disable_acceleration = "FALSE"
+MemTrimRate = "30"
+logging = "FALSE"
+monitor_control.log_vmsample = "FALSE"
+templateVM = "FALSE"
+mainMem.useNamedFile = "TRUE"
+monitor = "release"
+vmi.enabled = "FALSE"
+
+####### end of file ###################
+
+floppy0.fileName = "/dev/fd0"
+extendedConfigFile = "NURNware Cold Ignition.vmxf"
+virtualHW.productCompatibility = "hosted"
+
+isolation.tools.hgfs.disable = "TRUE"
+
+ethernet0.generatedAddress = "00:0c:29:1b:93:4a"
+uuid.location = "56 4d b1 d2 9e cd 54 04-b5 ee fc b5 ef 1b 93 4a"
+uuid.bios = "56 4d b1 d2 9e cd 54 04-b5 ee fc b5 ef 1b 93 4a"
+ide0:0.redo = ""
+ethernet0.pciSlotNumber = "16"
+sound.pciSlotNumber = "17"
+
+checkpoint.vmState = ""
+
+vmotion.checkpointFBSize = "16777216"

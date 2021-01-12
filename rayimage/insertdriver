@@ -1,0 +1,15 @@
+#!/bin/sh
+. ./mtoolsaccess
+. ./imageconfig
+
+if [ $# == 0 ]
+then
+    echo -e "INSERTDRIVER"
+    echo -e "Copies the specified absolute path to the ray"
+    echo -e "system/core/drivers directory."
+    echo -e -n "\n"
+    echo -e "USAGE insertdriver absolutepath drivername"
+else
+    echo -e "Copying module $1..."
+    mcopy -o $1 C:$USERDRIVERS/$2
+fi

@@ -1,0 +1,5 @@
+# absolute path to ray image directory
+RAYIMAGEDIR=~/coldignition/RayKernel/rayimage
+RAYMODULES=~/coldignition/raymodules
+RAYKERNEL=~/coldignition/RayKernel
+RAYUSER=~/coldignition/rayuser

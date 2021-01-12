@@ -1,0 +1,8 @@
+#!/bin/sh
+
+IMGDIR=../../rayimage
+
+pushd $IMGDIR
+./copykernel
+popd
+qemu -hda $IMGDIR/ci_hdd.img -m 32 -boot c -S -s

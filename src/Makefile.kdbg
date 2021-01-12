@@ -1,0 +1,942 @@
+# NURNware Ray Kernel
+# (For use with Cold iGnition operating system)
+# Copyright (C) 2007 - NURNware Technologies
+
+
+CC=i686-pc-ray-gcc
+C_ARGS=-DRAY_VERSION_BUILD=1390 -m32 -DRAYDEBUG -DDBG_SECTIONS=0 -gdwarf-2 -ggdb -DRAY_KERNEL_DEBUGGER -I./Include -O0 -c -nostartfiles -ffreestanding -Wall -Wwrite-strings -Wunused -Wextra -Werror -fno-ident -fno-pie -fno-stack-protector -pipe
+CPPC=i686-pc-ray-g++
+CPP_ARGS=-DRAY_VERSION_BUILD=1390 -m32 -DRAYDEBUG -DDBG_SECTIONS=0 -gdwarf-2 -ggdb -DRAY_KERNEL_DEBUGGER -I./Include -O0 -c -nostdlib -Wall -Wwrite-strings -Wunused -Wextra -Werror -fno-ident -fno-pie -fno-stack-protector -pipe
+LD=i686-pc-ray-g++
+
+
+all: ray.kdbg
+
+
+clean:
+	@-rm `find . -iname '*.okd'`
+
+
+rebuild: clean ray.kdbg
+
+
+kernel.okd: kernel.c Include/typedefs.h Include/compilerspec.h \
+ Include/multiboot.h Include/video/video_char.h \
+ Include/video/video_mode.h Include/memory/memory.h \
+ Include/memory/memfunc.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/mmu.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/flags.h Include/memory/addresses.h \
+ Include/memory/strings/strings.h Include/hal/gdt.h Include/hal/idt.h \
+ Include/hal/int.h Include/hal/processor.h Include/hal/features.h \
+ Include/kernel.h Include/hal/timer.h Include/app/rmi.h \
+ Include/memory/arguments.h Include/app/callbacks.h Include/app/ioperm.h \
+ Include/app/tdm.h Include/mtask/scheduler.h Include/hal/syscall.h \
+ Include/mtask/thread.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/appearance/appearance.h Include/cmdline.h \
+ Include/kernel_private.h Include/hal/irq_han.h \
+ Include/app/usermodefuncs.h Include/modules/loadmodule.h \
+ Include/hal/atom.h Include/kdebug/symboltable.h Include/cpp/cppsupport.h \
+ Include/globalconfig.h Include/test/unittest.h Include/kdebug/kdebug.h \
+ Include/kdebug/i386-stub.h
+	@echo -e "MAIN [kernel.c]"
+	@$(CC) $(C_ARGS)  kernel.c -o kernel.okd
+
+
+boot.okd: boot.S Include/multiboot.h Include/memory/addresses.h
+	@echo -e "MAIN [boot.S]"
+	@$(CC) $(C_ARGS)  boot.S -o boot.okd
+
+
+cmdline.okd: cmdline.c Include/typedefs.h Include/compilerspec.h \
+ Include/cmdline.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/memory/strings/strings.h Include/hal/features.h \
+ Include/memory/memory.h Include/flags.h Include/video/video_char.h \
+ Include/debug.h Include/profiler/useprofile.h \
+ Include/profiler/profiling.h Include/profiler/measurement.h \
+ Include/globalconfig.h
+	@echo -e "MAIN [cmdline.c]"
+	@$(CC) $(C_ARGS)  cmdline.c -o cmdline.okd
+
+
+app/ioperm.okd: app/ioperm.c Include/typedefs.h Include/compilerspec.h \
+ Include/mtask/scheduler.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/hal/syscall.h \
+ Include/hal/tss.h Include/app/ioperm.h Include/app/tdm.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/app/callbacks.h \
+ Include/memory/memory.h Include/flags.h Include/memory/usermem.h \
+ Include/memory/addresses.h Include/debug.h Include/video/video_char.h
+	@echo -e "SUBPART [app/ioperm.c]"
+	@$(CC) $(C_ARGS) app/ioperm.c  -o app/ioperm.okd
+
+
+app/ipc.okd: app/ipc.c Include/typedefs.h Include/compilerspec.h \
+ Include/app/ipc.h Include/app/ipc_types.h Include/mtask/privileges.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_user.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/app/rmi.h Include/memory/arguments.h \
+ Include/app/processnames.h Include/mtask/pid.h \
+ Include/memory/strings/strings.h Include/debug.h \
+ Include/video/video_char.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/memory/memory.h \
+ Include/flags.h Include/memory/usermem.h Include/memory/adt/hashing.h
+	@echo -e "SUBPART [app/ipc.c]"
+	@$(CC) $(C_ARGS) app/ipc.c  -o app/ipc.okd
+
+
+app/processnames.okd: app/processnames.c Include/typedefs.h \
+ Include/compilerspec.h Include/mtask/pid_types.h \
+ Include/memory/strings/strings.h Include/memory/memory.h \
+ Include/memory/memfunc.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/debug.h Include/video/video_char.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/app/callbacks.h Include/app/tdm.h
+	@echo -e "SUBPART [app/processnames.c]"
+	@$(CC) $(C_ARGS) app/processnames.c  -o app/processnames.okd
+
+
+app/rmi.okd: app/rmi.c Include/typedefs.h Include/compilerspec.h \
+ Include/memory/adt/hashmap.h Include/app/ipc_types.h \
+ Include/mtask/privileges.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_user.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/app/rmi.h Include/memory/arguments.h \
+ Include/app/rmi_internals.h Include/memory/memory.h Include/flags.h \
+ Include/memory/usermem.h Include/memory/strings/strings.h \
+ Include/memory/threadmemory.h Include/memory/addresses.h \
+ Include/memory/protection.h Include/mtask/thread.h \
+ Include/mtask/scheduler.h Include/hal/syscall.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/debug.h Include/video/video_char.h
+	@echo -e "SUBPART [app/rmi.c]"
+	@$(CC) $(C_ARGS) app/rmi.c  -o app/rmi.okd
+
+
+app/syscall.okd: app/syscall.c Include/typedefs.h Include/compilerspec.h \
+ Include/memory/memory.h Include/memory/memfunc.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/hal/syscall.h Include/hal/tss.h Include/hal/processor.h \
+ Include/hal/msr.h Include/hal/gdt.h Include/hal/abi.h \
+ Include/mtask/scheduler.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/hal/timer.h \
+ Include/debug.h Include/video/video_char.h
+	@echo -e "SUBPART [app/syscall.c]"
+	@$(CC) $(C_ARGS) app/syscall.c  -o app/syscall.okd
+
+
+app/usermodefuncs.okd: app/usermodefuncs.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/memory.h Include/memory/memfunc.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/hal/syscall.h Include/app/sct.h Include/app/rmi.h \
+ Include/memory/arguments.h Include/mtask/scheduler.h \
+ Include/mtask/thread.h Include/mtask/pid.h Include/app/usermodefuncs.h \
+ Include/app/wrappers.h Include/video/video_char.h \
+ Include/memory/usermem.h Include/app/ioperm.h Include/app/tdm.h \
+ Include/app/ipc.h Include/memory/protection.h Include/app/callbacks.h \
+ Include/hal/irq_han.h Include/hal/8259.h Include/kdebug/i386-stub.h \
+ Include/profiler/useprofile.h Include/profiler/profiling.h \
+ Include/profiler/measurement.h Include/debug.h Include/exceptions.h \
+ Include/hal/irq_han.h
+	@echo -e "SUBPART [app/usermodefuncs.c]"
+	@$(CC) $(C_ARGS) app/usermodefuncs.c  -o app/usermodefuncs.okd
+
+
+memory/memory.okd: memory/memory.c Include/flags.h Include/typedefs.h \
+ Include/compilerspec.h Include/mtask/semaphore.h \
+ Include/memory/adt/hashmap.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/memory/memory.h Include/memory/memory_types.h \
+ Include/memory/addresses.h Include/memory/memtune.h Include/hal/atom.h \
+ Include/memory/usermem.h Include/debug.h Include/video/video_char.h \
+ Include/hal/processor.h Include/hal/tss.h Include/hal/gdt.h \
+ Include/app/ioperm.h
+	@echo -e "SUBPART [memory/memory.c]"
+	@$(CC) $(C_ARGS) memory/memory.c  -o memory/memory.okd
+
+
+memory/mmu.okd: memory/mmu.c Include/typedefs.h Include/compilerspec.h \
+ Include/memory/mmu.h Include/multiboot.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/mtask/semaphore.h \
+ Include/mtask/semaphore_types.h Include/mtask/task_types.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/hal/processor.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/memory/addresses.h \
+ Include/memory/memory_types.h Include/memory/strings/strings.h \
+ Include/memory/memory.h Include/flags.h Include/memory/memtune.h \
+ Include/memory/stackmem.h Include/video/video_char.h \
+ Include/math/mathfuncs.h Include/debug.h
+	@echo -e "SUBPART [memory/mmu.c]"
+	@$(CC) $(C_ARGS) memory/mmu.c  -o memory/mmu.okd
+
+
+memory/paging.okd: memory/paging.c Include/flags.h Include/typedefs.h \
+ Include/compilerspec.h Include/memory/adt/hashmap.h \
+ Include/memory/paging.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/memory/memory.h Include/mtask/task_types.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/memory/addresses.h Include/hal/tss.h \
+ Include/mtask/scheduler.h Include/hal/syscall.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/hal/gdt.h Include/hal/processor.h Include/debug.h \
+ Include/video/video_char.h Include/video/video_mode.h Include/hal/isr.h
+	@echo -e "SUBPART [memory/paging.c]"
+	@$(CC) $(C_ARGS) memory/paging.c  -o memory/paging.okd
+
+
+memory/protection.okd: memory/protection.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/adt/hashmap.h \
+ Include/memory/paging.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/memory/protection.h Include/mtask/task_types.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h
+	@echo -e "SUBPART [memory/protection.c]"
+	@$(CC) $(C_ARGS) memory/protection.c  -o memory/protection.okd
+
+
+memory/stackmem.okd: memory/stackmem.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/addresses.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/video/video_char.h
+	@echo -e "SUBPART [memory/stackmem.c]"
+	@$(CC) $(C_ARGS) memory/stackmem.c  -o memory/stackmem.okd
+
+
+memory/threadmemory.okd: memory/threadmemory.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/threadmemory.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/memory/memory.h Include/flags.h \
+ Include/mtask/scheduler.h Include/hal/syscall.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/debug.h Include/video/video_char.h
+	@echo -e "SUBPART [memory/threadmemory.c]"
+	@$(CC) $(C_ARGS) memory/threadmemory.c  -o memory/threadmemory.okd
+
+
+memory/strings/memcpy.okd: memory/strings/memcpy.S
+	@echo -e "SUBPART [memory/strings/memcpy.S]"
+	@$(CC) $(C_ARGS) memory/strings/memcpy.S  -o memory/strings/memcpy.okd
+
+
+memory/strings/memmove.okd: memory/strings/memmove.S
+	@echo -e "SUBPART [memory/strings/memmove.S]"
+	@$(CC) $(C_ARGS) memory/strings/memmove.S  -o memory/strings/memmove.okd
+
+
+memory/strings/memset.okd: memory/strings/memset.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/memset.c]"
+	@$(CC) $(C_ARGS) memory/strings/memset.c  -o memory/strings/memset.okd
+
+
+memory/strings/numbers.okd: memory/strings/numbers.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/numbers.c]"
+	@$(CC) $(C_ARGS) memory/strings/numbers.c  -o memory/strings/numbers.okd
+
+
+memory/strings/strchr.okd: memory/strings/strchr.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/strchr.c]"
+	@$(CC) $(C_ARGS) memory/strings/strchr.c  -o memory/strings/strchr.okd
+
+
+memory/strings/strcmp.okd: memory/strings/strcmp.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/strcmp.c]"
+	@$(CC) $(C_ARGS) memory/strings/strcmp.c  -o memory/strings/strcmp.okd
+
+
+memory/strings/strcpy.okd: memory/strings/strcpy.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/strings/strings.h
+	@echo -e "SUBPART [memory/strings/strcpy.c]"
+	@$(CC) $(C_ARGS) memory/strings/strcpy.c  -o memory/strings/strcpy.okd
+
+
+memory/strings/strfuncs.okd: memory/strings/strfuncs.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/strings/strings.h
+	@echo -e "SUBPART [memory/strings/strfuncs.c]"
+	@$(CC) $(C_ARGS) memory/strings/strfuncs.c  -o memory/strings/strfuncs.okd
+
+
+memory/strings/strlen.okd: memory/strings/strlen.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/strlen.c]"
+	@$(CC) $(C_ARGS) memory/strings/strlen.c  -o memory/strings/strlen.okd
+
+
+memory/strings/strncmp.okd: memory/strings/strncmp.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/strncmp.c]"
+	@$(CC) $(C_ARGS) memory/strings/strncmp.c  -o memory/strings/strncmp.okd
+
+
+memory/strings/strncpy.okd: memory/strings/strncpy.c Include/typedefs.h \
+ Include/compilerspec.h
+	@echo -e "SUBPART [memory/strings/strncpy.c]"
+	@$(CC) $(C_ARGS) memory/strings/strncpy.c  -o memory/strings/strncpy.okd
+
+
+memory/adt/bitmap.okd: memory/adt/bitmap.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/adt/bitmap.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/debug.h \
+ Include/video/video_char.h
+	@echo -e "SUBPART [memory/adt/bitmap.c]"
+	@$(CC) $(C_ARGS) memory/adt/bitmap.c  -o memory/adt/bitmap.okd
+
+
+memory/adt/hashing.okd: memory/adt/hashing.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/adt/hashing.h
+	@echo -e "SUBPART [memory/adt/hashing.c]"
+	@$(CC) $(C_ARGS) memory/adt/hashing.c  -o memory/adt/hashing.okd
+
+
+memory/adt/hashmap.okd: memory/adt/hashmap.c Include/typedefs.h \
+ Include/compilerspec.h Include/debug.h Include/video/video_char.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/memory/memory.h \
+ Include/flags.h Include/math/mathfuncs.h
+	@echo -e "SUBPART [memory/adt/hashmap.c]"
+	@$(CC) $(C_ARGS) memory/adt/hashmap.c  -o memory/adt/hashmap.okd
+
+
+modules/elf32.okd: modules/elf32.cpp Include/typedefs.h \
+ Include/compilerspec.h Include/modules/elf_types.h \
+ Include/modules/elf_common.h Include/memory/mmu.h Include/multiboot.h \
+ Include/memory/addresses.h Include/memory/memory.h \
+ Include/memory/memfunc.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/memory/strings/strings.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/memory/usermem.h Include/debug.h Include/video/video_char.h \
+ Include/modules/elf32.h Include/modules/load_types.h \
+ Include/memory/arguments.h Include/cpp/staticlist.h \
+ Include/cpp/exception.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/map \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_tree.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_algobase.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/c++config.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/os_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/cpu_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/cstddef \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/include/stddef.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/functexcept.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/exception_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/cpp_type_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/type_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/numeric_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_pair.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/move.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/concept_check.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator_base_types.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator_base_funcs.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/debug/debug.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/c++allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/new_allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/new \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/exception \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_function.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/backward/binders.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_map.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/initializer_list \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_multimap.h \
+ Include/modules/loadexecutable.h Include/cpp/specialmem.h \
+ Include/cpp/specialmem_int.h
+	@echo -e "SUBPART [modules/elf32.cpp]"
+	@$(CPPC) $(CPP_ARGS) modules/elf32.cpp  -o modules/elf32.okd
+
+
+modules/loadexecutable.okd: modules/loadexecutable.cpp Include/typedefs.h \
+ Include/compilerspec.h Include/memory/memory.h Include/memory/memfunc.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/memory/usermem.h Include/memory/arguments.h \
+ Include/memory/addresses.h Include/memory/strings/strings.h \
+ Include/mtask/thread.h Include/mtask/scheduler.h Include/hal/syscall.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/app/callbacks.h \
+ Include/app/tdm.h Include/debug.h Include/video/video_char.h \
+ Include/profiler/useprofile.h Include/profiler/profiling.h \
+ Include/profiler/measurement.h Include/modules/loadexecutable.h \
+ Include/modules/load_types.h Include/cpp/staticlist.h \
+ Include/cpp/exception.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/map \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_tree.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_algobase.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/c++config.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/os_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/cpu_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/cstddef \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/include/stddef.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/functexcept.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/exception_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/cpp_type_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/type_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/numeric_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_pair.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/move.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/concept_check.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator_base_types.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator_base_funcs.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/debug/debug.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/c++allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/new_allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/new \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/exception \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_function.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/backward/binders.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_map.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/initializer_list \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_multimap.h
+	@echo -e "SUBPART [modules/loadexecutable.cpp]"
+	@$(CPPC) $(CPP_ARGS) modules/loadexecutable.cpp  -o modules/loadexecutable.okd
+
+
+modules/loadmodule.okd: modules/loadmodule.cpp Include/typedefs.h \
+ Include/compilerspec.h Include/multiboot.h Include/memory/memory.h \
+ Include/memory/memfunc.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/mmu.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/flags.h Include/memory/usermem.h \
+ Include/memory/arguments.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/mtask/thread.h \
+ Include/mtask/scheduler.h Include/hal/syscall.h \
+ Include/memory/strings/strings.h Include/debug.h \
+ Include/video/video_char.h Include/modules/loadmodule.h \
+ Include/modules/elf32.h Include/modules/elf_types.h \
+ Include/modules/elf_common.h Include/modules/load_types.h \
+ Include/cpp/staticlist.h Include/cpp/exception.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/map \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_tree.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_algobase.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/c++config.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/os_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/cpu_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/cstddef \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/include/stddef.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/functexcept.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/exception_defines.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/cpp_type_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/type_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/numeric_traits.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_pair.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/move.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/concept_check.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator_base_types.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator_base_funcs.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_iterator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/debug/debug.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/i686-pc-ray/bits/c++allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/ext/new_allocator.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/new \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/exception \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_function.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/backward/binders.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_map.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/initializer_list \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/c++/4.4.3/bits/stl_multimap.h \
+ Include/modules/loadexecutable.h
+	@echo -e "SUBPART [modules/loadmodule.cpp]"
+	@$(CPPC) $(CPP_ARGS) modules/loadmodule.cpp  -o modules/loadmodule.okd
+
+
+mtask/pid.okd: mtask/pid.c Include/typedefs.h Include/compilerspec.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/debug.h Include/video/video_char.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/app/callbacks.h \
+ Include/app/tdm.h Include/mtask/pid.h
+	@echo -e "SUBPART [mtask/pid.c]"
+	@$(CC) $(C_ARGS) mtask/pid.c  -o mtask/pid.okd
+
+
+mtask/scheduler.okd: mtask/scheduler.c Include/typedefs.h \
+ Include/compilerspec.h Include/hal/tss.h Include/hal/msr.h \
+ Include/memory/adt/hashmap.h Include/memory/paging.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/task_types.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/mtask/event_types.h \
+ Include/mtask/thread.h Include/memory/arguments.h \
+ Include/mtask/scheduler.h Include/hal/syscall.h Include/memory/memory.h \
+ Include/flags.h Include/hal/processor.h Include/hal/8259.h \
+ Include/hal/timer.h Include/memory/strings/strings.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/app/callbacks.h \
+ Include/app/tdm.h Include/profiler/measurement.h Include/hal/atom.h \
+ Include/debug.h Include/video/video_char.h
+	@echo -e "SUBPART [mtask/scheduler.c]"
+	@$(CC) $(C_ARGS) mtask/scheduler.c  -o mtask/scheduler.okd
+
+
+mtask/semaphore.okd: mtask/semaphore.c Include/typedefs.h \
+ Include/compilerspec.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/memory/memory.h Include/flags.h Include/memory/adt/hashing.h \
+ Include/mtask/semaphore_types.h Include/mtask/scheduler.h \
+ Include/hal/syscall.h Include/hal/atom.h \
+ Include/memory/strings/strings.h Include/debug.h \
+ Include/video/video_char.h
+	@echo -e "SUBPART [mtask/semaphore.c]"
+	@$(CC) $(C_ARGS) mtask/semaphore.c  -o mtask/semaphore.okd
+
+
+mtask/thread.okd: mtask/thread.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/memory.h Include/memory/memfunc.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/memory/arguments.h Include/memory/threadmemory.h \
+ Include/mtask/scheduler.h Include/hal/syscall.h Include/mtask/thread.h \
+ Include/mtask/pid.h Include/app/rmi.h Include/memory/usermem.h \
+ Include/hal/gdt.h Include/hal/atom.h Include/hal/x86flags.h \
+ Include/hal/abi.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h \
+ Include/memory/strings/strings.h Include/debug.h \
+ Include/video/video_char.h
+	@echo -e "SUBPART [mtask/thread.c]"
+	@$(CC) $(C_ARGS) mtask/thread.c  -o mtask/thread.okd
+
+
+hal/8259.okd: hal/8259.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/io.h Include/hal/8259.h Include/hal/8259_ctrl.h \
+ Include/hal/irq_han.h Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/exceptions.h Include/hal/irq_han.h
+	@echo -e "SUBPART [hal/8259.c]"
+	@$(CC) $(C_ARGS) hal/8259.c  -o hal/8259.okd
+
+
+hal/abi.okd: hal/abi.c Include/typedefs.h Include/compilerspec.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h
+	@echo -e "SUBPART [hal/abi.c]"
+	@$(CC) $(C_ARGS) hal/abi.c  -o hal/abi.okd
+
+
+hal/atom.okd: hal/atom.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/atom.h Include/hal/int.h
+	@echo -e "SUBPART [hal/atom.c]"
+	@$(CC) $(C_ARGS) hal/atom.c  -o hal/atom.okd
+
+
+hal/features.okd: hal/features.c Include/typedefs.h \
+ Include/compilerspec.h Include/hal/features.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/video/video_char.h Include/hal/timer.h Include/hal/timer_ctrl.h \
+ Include/hal/syscall.h
+	@echo -e "SUBPART [hal/features.c]"
+	@$(CC) $(C_ARGS) hal/features.c  -o hal/features.okd
+
+
+hal/gdt.okd: hal/gdt.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/gdt.h Include/hal/tss.h Include/memory/memory.h \
+ Include/memory/memfunc.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/flags.h Include/memory/addresses.h
+	@echo -e "SUBPART [hal/gdt.c]"
+	@$(CC) $(C_ARGS) hal/gdt.c  -o hal/gdt.okd
+
+
+hal/idt.okd: hal/idt.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/idt.h Include/hal/isr.h Include/memory/memfunc.h \
+ Include/hal/irq.h Include/hal/8259.h Include/hal/gdt.h \
+ Include/hal/systrap.h
+	@echo -e "SUBPART [hal/idt.c]"
+	@$(CC) $(C_ARGS) hal/idt.c  -o hal/idt.okd
+
+
+hal/irq_han.okd: hal/irq_han.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/8259.h Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/task_types.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/mtask/scheduler.h Include/hal/syscall.h \
+ Include/app/callbacks.h Include/hal/irq_han.h Include/app/tdm.h \
+ Include/memory/threadmemory.h Include/memory/memory.h Include/flags.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/debug.h \
+ Include/video/video_char.h Include/globalconfig.h Include/hal/uart.h \
+ Include/kdebug/kdebug.h Include/kdebug/i386-stub.h
+	@echo -e "SUBPART [hal/irq_han.c]"
+	@$(CC) $(C_ARGS) hal/irq_han.c  -o hal/irq_han.okd
+
+
+hal/irq.okd: hal/irq.S Include/hal/msr.h Include/hal/systrap.h
+	@echo -e "SUBPART [hal/irq.S]"
+	@$(CC) $(C_ARGS) hal/irq.S  -o hal/irq.okd
+
+
+hal/isr.okd: hal/isr.c Include/typedefs.h Include/compilerspec.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/hal/int.h \
+ Include/hal/irq_han.h Include/hal/processor.h
+	@echo -e "SUBPART [hal/isr.c]"
+	@$(CC) $(C_ARGS) hal/isr.c  -o hal/isr.okd
+
+
+hal/timer.okd: hal/timer.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/timer.h Include/hal/timer_ctrl.h Include/hal/io.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/app/callbacks.h Include/app/tdm.h
+	@echo -e "SUBPART [hal/timer.c]"
+	@$(CC) $(C_ARGS) hal/timer.c  -o hal/timer.okd
+
+
+hal/tss.okd: hal/tss.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/tss.h Include/memory/memory.h Include/memory/memfunc.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/memory/addresses.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/hal/gdt.h \
+ Include/memory/usermem.h Include/app/ioperm.h
+	@echo -e "SUBPART [hal/tss.c]"
+	@$(CC) $(C_ARGS) hal/tss.c  -o hal/tss.okd
+
+
+hal/uart.okd: hal/uart.c Include/typedefs.h Include/compilerspec.h \
+ Include/hal/uart.h Include/hal/io.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h \
+ Include/video/video_char.h Include/hal/8259.h
+	@echo -e "SUBPART [hal/uart.c]"
+	@$(CC) $(C_ARGS) hal/uart.c  -o hal/uart.okd
+
+
+appearance/appearance.okd: appearance/appearance.c Include/typedefs.h \
+ Include/compilerspec.h Include/video/video_char.h \
+ Include/video/video_mode.h Include/appearance/appearance.h \
+ Include/version.h Include/verdate.h
+	@echo -e "SUBPART [appearance/appearance.c]"
+	@$(CC) $(C_ARGS) appearance/appearance.c  -o appearance/appearance.okd
+
+
+video/video_char.okd: video/video_char.c Include/typedefs.h \
+ Include/compilerspec.h Include/video/video_char.h \
+ Include/memory/memfunc.h Include/hal/io.h Include/c/stdarg.h \
+ Include/video/video_mode.h Include/debug.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/globalconfig.h
+	@echo -e "SUBPART [video/video_char.c]"
+	@$(CC) $(C_ARGS) video/video_char.c  -o video/video_char.okd
+
+
+video/video_mode.okd: video/video_mode.c Include/typedefs.h \
+ Include/compilerspec.h Include/video/video_mode.h Include/video/vga_io.h \
+ Include/video/fonts/font8.h Include/video/fonts/font16.h \
+ Include/hal/io.h Include/memory/memfunc.h
+	@echo -e "SUBPART [video/video_mode.c]"
+	@$(CC) $(C_ARGS) video/video_mode.c  -o video/video_mode.okd
+
+
+math/mathfuncs.okd: math/mathfuncs.c Include/typedefs.h \
+ Include/compilerspec.h Include/math/mathfuncs.h
+	@echo -e "SUBPART [math/mathfuncs.c]"
+	@$(CC) $(C_ARGS) math/mathfuncs.c  -o math/mathfuncs.okd
+
+
+math/lib/udiv3.okd: math/lib/udiv3.c Include/typedefs.h \
+ Include/compilerspec.h Include/math/udiv3.h
+	@echo -e "SUBPART [math/lib/udiv3.c]"
+	@$(CC) $(C_ARGS) math/lib/udiv3.c  -o math/lib/udiv3.okd
+
+
+kdebug/i386-stub.okd: kdebug/i386-stub.c Include/typedefs.h \
+ Include/compilerspec.h Include/memory/strings/strings.h \
+ Include/hal/uart.h Include/kdebug/kdebug.h Include/video/video_char.h
+	@echo -e "SUBPART [kdebug/i386-stub.c]"
+	@$(CC) $(C_ARGS) kdebug/i386-stub.c  -o kdebug/i386-stub.okd
+
+
+kdebug/kdebug.okd: kdebug/kdebug.c Include/typedefs.h \
+ Include/compilerspec.h Include/hal/uart.h Include/hal/uartports.h \
+ Include/kdebug/kdebug.h Include/kdebug/i386-stub.h \
+ Include/video/video_char.h
+	@echo -e "SUBPART [kdebug/kdebug.c]"
+	@$(CC) $(C_ARGS) kdebug/kdebug.c  -o kdebug/kdebug.okd
+
+
+kdebug/stackcheck.okd: kdebug/stackcheck.c Include/typedefs.h \
+ Include/compilerspec.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/app/callbacks.h Include/app/tdm.h
+	@echo -e "SUBPART [kdebug/stackcheck.c]"
+	@$(CC) $(C_ARGS) kdebug/stackcheck.c  -o kdebug/stackcheck.okd
+
+
+kdebug/symboltable.okd: kdebug/symboltable.c Include/typedefs.h \
+ Include/compilerspec.h Include/debug.h Include/video/video_char.h \
+ Include/exceptions.h Include/hal/irq_han.h Include/mtask/task_types.h \
+ Include/memory/paging.h Include/memory/adt/hashmap.h \
+ Include/memory/adt/bitmap.h Include/memory/memfunc.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h \
+ Include/app/callbacks.h Include/app/tdm.h kdebug/symbolmap.gen
+	@echo -e "SUBPART [kdebug/symboltable.c]"
+	@$(CC) $(C_ARGS) kdebug/symboltable.c  -o kdebug/symboltable.okd
+
+
+test/unittest.okd: test/unittest.c Include/typedefs.h \
+ Include/compilerspec.h Include/test/unittest.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/memfunc.h Include/memory/mmu.h Include/multiboot.h \
+ Include/mtask/semaphore.h Include/mtask/privileges.h \
+ Include/hal/x86regs.h Include/mtask/pid_types.h \
+ Include/memory/adt/linkedlist.h Include/app/ipc_types.h \
+ Include/app/rmi_types.h Include/mtask/threadqueue.h \
+ Include/app/ipc_user.h Include/mtask/scheduler.h Include/hal/syscall.h \
+ Include/debug.h Include/video/video_char.h Include/exceptions.h \
+ Include/hal/irq_han.h Include/app/callbacks.h Include/app/tdm.h
+	@echo -e "SUBPART [test/unittest.c]"
+	@$(CC) $(C_ARGS) test/unittest.c  -o test/unittest.okd
+
+
+cpp/cppsupport.okd: cpp/cppsupport.cpp Include/typedefs.h \
+ Include/compilerspec.h Include/memory/memory.h Include/memory/memfunc.h \
+ Include/mtask/task_types.h Include/memory/paging.h \
+ Include/memory/adt/hashmap.h Include/memory/adt/bitmap.h \
+ Include/memory/mmu.h Include/multiboot.h Include/mtask/semaphore.h \
+ Include/mtask/privileges.h Include/hal/x86regs.h \
+ Include/mtask/pid_types.h Include/memory/adt/linkedlist.h \
+ Include/app/ipc_types.h Include/app/rmi_types.h \
+ Include/mtask/threadqueue.h Include/app/ipc_user.h Include/flags.h \
+ Include/memory/stackmem.h Include/exceptions.h Include/hal/irq_han.h \
+ Include/app/callbacks.h Include/app/tdm.h Include/video/video_char.h \
+ Include/cpp/cppsupport.h Include/cpp/specialmem_int.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/reent.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/sys/reent.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/_ansi.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/newlib.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/sys/config.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/machine/ieeefp.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/sys/_types.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/machine/_types.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/machine/_default_types.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/sys/lock.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/include/stddef.h \
+ /usr/raycompiler/lib/gcc/i686-pc-ray/4.4.3/../../../../i686-pc-ray/include/machine/types.h
+	@echo -e "SUBPART [cpp/cppsupport.cpp]"
+	@$(CPPC) $(CPP_ARGS) cpp/cppsupport.cpp  -o cpp/cppsupport.okd
+
+
+cpp/icxxabi.okd: cpp/icxxabi.cpp Include/typedefs.h \
+ Include/compilerspec.h cpp/./icxxabi.h
+	@echo -e "SUBPART [cpp/icxxabi.cpp]"
+	@$(CPPC) $(CPP_ARGS) cpp/icxxabi.cpp  -o cpp/icxxabi.okd
+
+
+cpp/list.okd: cpp/list.cpp Include/typedefs.h Include/compilerspec.h \
+ Include/cpp/staticlist.h Include/cpp/exception.h
+	@echo -e "SUBPART [cpp/list.cpp]"
+	@$(CPPC) $(CPP_ARGS) cpp/list.cpp  -o cpp/list.okd
+
+
+profiler/instrument.okd: profiler/instrument.c
+	@echo -e "SUBPART [profiler/instrument.c]"
+	@$(CC) $(C_ARGS) profiler/instrument.c  -o profiler/instrument.okd
+
+
+profiler/useprofile.okd: profiler/useprofile.c
+	@echo -e "SUBPART [profiler/useprofile.c]"
+	@$(CC) $(C_ARGS) profiler/useprofile.c  -o profiler/useprofile.okd
+
+
+ray.kdbg: Include/verdate.h  kernel.okd boot.okd cmdline.okd app/ioperm.okd app/ipc.okd app/processnames.okd app/rmi.okd app/syscall.okd app/usermodefuncs.okd memory/memory.okd memory/mmu.okd memory/paging.okd memory/protection.okd memory/stackmem.okd memory/threadmemory.okd memory/strings/memcpy.okd memory/strings/memmove.okd memory/strings/memset.okd memory/strings/numbers.okd memory/strings/strchr.okd memory/strings/strcmp.okd memory/strings/strcpy.okd memory/strings/strfuncs.okd memory/strings/strlen.okd memory/strings/strncmp.okd memory/strings/strncpy.okd memory/adt/bitmap.okd memory/adt/hashing.okd memory/adt/hashmap.okd modules/elf32.okd modules/loadexecutable.okd modules/loadmodule.okd mtask/pid.okd mtask/scheduler.okd mtask/semaphore.okd mtask/thread.okd hal/8259.okd hal/abi.okd hal/atom.okd hal/features.okd hal/gdt.okd hal/idt.okd hal/irq_han.okd hal/irq.okd hal/isr.okd hal/timer.okd hal/tss.okd hal/uart.okd appearance/appearance.okd video/video_char.okd video/video_mode.okd math/mathfuncs.okd math/lib/udiv3.okd kdebug/i386-stub.okd kdebug/kdebug.okd kdebug/stackcheck.okd kdebug/symboltable.okd test/unittest.okd cpp/cppsupport.okd cpp/icxxabi.okd cpp/list.okd profiler/instrument.okd profiler/useprofile.okd
+	@echo -e "Building kernel image ray.kdbg..."
+	@$(LD) -nostdlib -T raylink.ld -o ray.kdbg  kernel.okd boot.okd cmdline.okd app/ioperm.okd app/ipc.okd app/processnames.okd app/rmi.okd app/syscall.okd app/usermodefuncs.okd memory/memory.okd memory/mmu.okd memory/paging.okd memory/protection.okd memory/stackmem.okd memory/threadmemory.okd memory/strings/memcpy.okd memory/strings/memmove.okd memory/strings/memset.okd memory/strings/numbers.okd memory/strings/strchr.okd memory/strings/strcmp.okd memory/strings/strcpy.okd memory/strings/strfuncs.okd memory/strings/strlen.okd memory/strings/strncmp.okd memory/strings/strncpy.okd memory/adt/bitmap.okd memory/adt/hashing.okd memory/adt/hashmap.okd modules/elf32.okd modules/loadexecutable.okd modules/loadmodule.okd mtask/pid.okd mtask/scheduler.okd mtask/semaphore.okd mtask/thread.okd hal/8259.okd hal/abi.okd hal/atom.okd hal/features.okd hal/gdt.okd hal/idt.okd hal/irq_han.okd hal/irq.okd hal/isr.okd hal/timer.okd hal/tss.okd hal/uart.okd appearance/appearance.okd video/video_char.okd video/video_mode.okd math/mathfuncs.okd math/lib/udiv3.okd kdebug/i386-stub.okd kdebug/kdebug.okd kdebug/stackcheck.okd kdebug/symboltable.okd test/unittest.okd cpp/cppsupport.okd cpp/icxxabi.okd cpp/list.okd profiler/instrument.okd profiler/useprofile.okd -lgcc -lsupc++
+	@echo -e "Updating symbol table..."
+	@./updatesymboltable
+	@$(LD) -nostdlib -T raylink.ld -o ray.kdbg  kernel.okd boot.okd cmdline.okd app/ioperm.okd app/ipc.okd app/processnames.okd app/rmi.okd app/syscall.okd app/usermodefuncs.okd memory/memory.okd memory/mmu.okd memory/paging.okd memory/protection.okd memory/stackmem.okd memory/threadmemory.okd memory/strings/memcpy.okd memory/strings/memmove.okd memory/strings/memset.okd memory/strings/numbers.okd memory/strings/strchr.okd memory/strings/strcmp.okd memory/strings/strcpy.okd memory/strings/strfuncs.okd memory/strings/strlen.okd memory/strings/strncmp.okd memory/strings/strncpy.okd memory/adt/bitmap.okd memory/adt/hashing.okd memory/adt/hashmap.okd modules/elf32.okd modules/loadexecutable.okd modules/loadmodule.okd mtask/pid.okd mtask/scheduler.okd mtask/semaphore.okd mtask/thread.okd hal/8259.okd hal/abi.okd hal/atom.okd hal/features.okd hal/gdt.okd hal/idt.okd hal/irq_han.okd hal/irq.okd hal/isr.okd hal/timer.okd hal/tss.okd hal/uart.okd appearance/appearance.okd video/video_char.okd video/video_mode.okd math/mathfuncs.okd math/lib/udiv3.okd kdebug/i386-stub.okd kdebug/kdebug.okd kdebug/stackcheck.okd kdebug/symboltable.okd test/unittest.okd cpp/cppsupport.okd cpp/icxxabi.okd cpp/list.okd profiler/instrument.okd profiler/useprofile.okd -lgcc -lsupc++
+	@echo -e "Done."
+
+
+.PHONY: clean Include/verdate.h

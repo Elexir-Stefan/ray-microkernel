@@ -1,0 +1,9 @@
+#!/bin/sh
+. ./mtoolsaccess
+. ./imageconfig
+
+#overwrite kernel on disk without confirmation
+echo Copying kernel...
+mcopy -o $RAYKERNEL/src/ray C:$KERNELDIR/ray.sys
+mcopy -o $RAYKERNEL/src/ray.kdbg C:$KERNELDIR/ray_kdbg.sys
+

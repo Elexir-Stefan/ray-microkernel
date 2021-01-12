@@ -1,0 +1,18 @@
+#!/bin/sh
+. ./mtoolsaccess
+. ./imageconfig
+
+USBDIR=/media/disk
+GRUBDIR=/boot/grub
+MENUFILE=menu.lst
+TEMPFILE=tmpedit.txt
+
+if [ "$1" != "usbbackup" ]
+then
+    mcopy C:$GRUBDIR/$MENUFILE $TEMPFILE -n
+    mcedit $TEMPFILE
+    mcopy $TEMPFILE C:$GRUBDIR/$MENUFILE -o
+else
+    echo -e "Saving backup on usb-key to $USBDIR$GRUBDIR/$MENUFILE..."
+    mcopy C:$GRUBDIR/$MENUFILE $USBDIR$GRUBDIR/$MENUFILE -n
+fi

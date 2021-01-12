@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ $# != 1 ]; then
+    echo "USAGE: profile2file absolute_dumpfilename"
+else
+
+    pushd ../rayimage
+    ./qemu.sh -serial null -serial file:$1
+    popd
+
+fi

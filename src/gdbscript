@@ -1,0 +1,4 @@
+set remotebaud 38400
+#target remote /dev/ttyS0
+target remote localhost:1234
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+. ./mtoolsaccess
+. ./imageconfig
+
+if [ $# != 1 ]; then
+    echo -e "USAGE: extractkernel dest"
+    echo -e "\tdest\tDestination directory"
+    exit 1
+fi
+
+# Copy kernel from image
+echo Copying kernel from image...
+mcopy -o C:$KERNELDIR/ray.sys $1/ray.sys
+

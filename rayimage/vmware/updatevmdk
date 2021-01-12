@@ -1,0 +1,2 @@
+#!/bin/sh
+qemu-img convert -f raw ../ci_hdd.img -O vmdk ci_hdd.vmdk

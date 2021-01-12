@@ -1,0 +1,10 @@
+#!/bin/sh
+
+THISDIR=`pwd`
+TRACEIMG=$THISDIR/trace.png
+
+rm $TRACEIMG
+pushd ../rayimage
+./qemu.sh -serial null -serial stdio|java -jar $THISDIR/dotprofiler.jar ../src/kdebug/symbolmap.gen -|dot -T png -o $TRACEIMG
+popd
+okular $TRACEIMG &

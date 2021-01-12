@@ -1,0 +1,18 @@
+#!/bin/sh
+FULLPATH=`readlink -f $0`
+PATHONLY=`dirname $FULLPATH`
+
+pushd $PATHONLY
+./pxe
+
+popd
+
+# HP ThinClient t5710
+etherwake 00:16:35:02:b5:6b
+#etherwake de:ad:be:ef:12:34
+
+# Athlon 64
+#etherwake 00:14:85:2A:0C:29
+
+# Athlon XP 1800+
+#etherwake de:ad:be:ef:12:34

@@ -1,0 +1,3 @@
+
+#define RAY_VERSION_DATE __DATE__
+#define RAY_VERSION_TIME __TIME__

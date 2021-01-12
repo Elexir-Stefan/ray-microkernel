@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<Foundry>
+<VM>
+<VMId type="string">52 86 9c b3 a8 2d 5b de-35 29 e4 fa 16 dd f4 5c</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 76 4f e6 33 90 37 da-cd 9f c9 ff a1 5c 72 5a</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 67 0b 39 66 7d e3 ca-ca fd d4 8a 20 1e 8a 4c</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 e9 a6 2d 98 aa 1f e3-a8 1a f5 e3 b3 82 e5 25</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 ae 93 5d 09 b2 38 f2-a4 61 fc ff e8 a5 23 24</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 e8 63 a0 f2 aa b2 36-39 b0 eb 43 48 ad 25 68</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 36 ba 1d c6 93 00 da-df 6b 3a 1a aa 02 4f 3c</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 ca 16 78 c2 33 9c d7-6a 88 42 9f 16 b9 92 b8</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 77 45 f3 bf cf a4 80-5a a0 a1 c8 1c 2b 22 41</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 66 d8 a5 5c 8c 4a a1-33 41 fe 7c 8e 57 18 cc</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 a1 e3 e2 44 0d db 3f-95 75 a4 1a 11 5c 7e 5d</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM>
+<VM>
+<VMId type="string">52 e8 02 fb 8d ba 0c 26-bc 01 be b8 3a de ae 89</VMId>
+<ClientMetaData>
+<clientMetaDataAttributes/>
+<HistoryEventList/></ClientMetaData>
+<vmxPathName type="string">NURNware Cold Ignition.vmx</vmxPathName></VM></Foundry>

@@ -1,0 +1,13 @@
+#!/bin/sh
+FULLPATH=`readlink -f $0`
+PATHONLY=`dirname $FULLPATH`
+
+echo -e "Preparing qemu. Copying all modules to the virtual hard disk..."
+pushd $PATHONLY
+./copyallmodules
+./copykernel
+echo -e "Calling qemu from $PWD"
+screen -dm -S qemudebug ./qemu.sh -serial tcp::1234,server
+echo -e "Qemu started..."
+sleep 3
+popd

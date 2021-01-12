@@ -1,0 +1,12 @@
+/**
+ * @file $MODULE$.h
+ * @author Stefan Nuernberger [NURNware Technologies - stefan@nurnware.de]
+ * @date $DATE$
+ * @see $MODULE$.c
+ * @brief Summary
+ */
+
+#ifndef _$MODULE$_H
+#define _$MODULE$_H
+
+#endif

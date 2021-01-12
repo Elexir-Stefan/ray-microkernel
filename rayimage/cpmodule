@@ -1,0 +1,14 @@
+#!/bin/sh
+. ./mtoolsaccess
+. ./imageconfig
+
+if [ $# == 0 ]
+then
+    echo -e "cpmodule.sh"
+    echo -e "Copies a RAY kernel module to the grub disk."
+    echo -e -n "\n"
+    echo -e "USAGE cpmodule.sh modulename"
+else
+    echo -e "Copying module $1..."
+    ./cpmodfrom $RAYMODULES/modules/$1/$1 $1
+fi

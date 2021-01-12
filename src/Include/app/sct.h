@@ -1,0 +1,75 @@
+#ifndef _SCT_H
+#define _SCT_H
+
+/**
+ * @file sct.h
+ * @author Stefan Nuernberger
+ * @date 09-26-2006
+ * @brief System Call Table entries
+ */
+
+#define SCT_VIDEO_ATTR			98
+#define SCT_PRINTF				99
+#define SCT_MALLOC				100
+#define SCT_FREE				101
+#define SCT_RELINQUISH			102
+#define SCT_REQUEST_IO_PORT		103
+#define SCT_GET_MEM_SIZE		104
+
+#define SCT_GET_PRIV_LEVEL		105
+#define SCT_REGISTER_IRQ		106
+#define SCT_SLEEP				107
+#define SCT_INT_WAIT			108
+
+#define SCT_THREAD_CREATE		116
+#define SCT_THREAD_EXIT			117
+#define SCT_THREAD_INFO			118
+#define SCT_EXIT_PROCESS		119
+#define SCT_STANDARDRET			120
+
+#define SCT_SEMAPHORE_CREATE	122
+#define SCT_SEMAPHORE_GET		123
+#define SCT_SEMAPHORE_ENTER		124
+#define SCT_SEMAPHORE_LEAVE		125
+#define SCT_SEMAPHORE_STATUS	126
+#define SCT_SEMAPHORE_DESTROY	127
+#define SCT_SLEEP_INTV			128
+#define SCT_LOAD_PROCESS		129
+#define SCT_GET_PID				130
+#define SCT_GET_TID				131
+#define SCT_THREAD_GET			132
+#define SCT_THREAD_ABORT		133
+#define SCT_THREAD_NOTIFY		134
+#define SCT_THREAD_ALIVE		135
+#define SCT_THREAD_JOIN			136
+
+#define SCT_BARRIER_ARRIVE		140
+#define SCT_BARRIER_GO			141
+#define SCT_BARRIER_CLOSE		142
+#define SCT_BARRIER_CREATE		143
+
+#define SCT_CREATE_WALL			150
+#define SCT_CREATE_SOCKET		151
+#define SCT_REMOVE_SOCKET		152
+#define SCT_PLUG				153
+#define SCT_PLUG_PID			154
+#define SCT_ALLOC_MB			155
+#define SCT_FREE_MB				156
+#define SCT_REMOTE_METHOD		157
+#define SCT_GET_RMI_CABLE		158
+#define SCT_GET_ALL_CABLES		159
+
+#define SCT_HARD_RESET			400
+
+// Debugging and profiling
+#define SCT_PROFILE_GETBUF		502
+#define SCT_WRITE_DEBUG_MSG		503
+#define SCT_PROFILE_FLUSH		504
+#define SCT_PROFILE_SETUP		505
+#define SCT_PROFILE_START		506
+#define SCT_PROFILE_STOP		507
+#define SCT_PROFILE_RESET		508
+#define SCT_PROFILE_SIZE		509
+#define SCT_PROFILE_RCOUNT		510
+#define SCT_BREAKPOINT			511
+#endif

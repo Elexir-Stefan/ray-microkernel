@@ -1,0 +1,17 @@
+#!/bin/sh
+
+. ./imageconfig
+
+TFTPROOT=/var/tftpboot
+
+cp $RAYKERNEL/src/ray $TFTPROOT/ray/kernel.sys
+cp $RAYKERNEL/src/ray.kdbg $TFTPROOT/ray/kernel_kdbg.sys
+
+DIRS=`cat $RAYUSER/alluserprogs`
+
+echo -e "Copying all modules"
+
+for MODULE in $DIRS
+do
+	cp $RAYUSER/$MODULE/$MODULE $TFTPROOT/ray/$MODULE
+done
